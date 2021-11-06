@@ -6,6 +6,7 @@ Standards-Version: 1.0
 Package: checksum
 Section: misc
 Priority: optional
+Depends: ${shlibs:Depends}
 Architecture: armhf
 Homepage: https://www.it-hobby.km.ua/
 Description: checksum util
