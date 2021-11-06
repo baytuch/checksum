@@ -36,5 +36,6 @@ int main() {
   std::cout << std::endl << std::endl;
   if (status) std::cout << "Everything is fine. Data is not corrupted!" << std::endl;
   else std::cout << "Warning: there were errors during the test!" << std::endl;
+  if (!status) return 1;
   return 0;
 }
