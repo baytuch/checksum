@@ -1,0 +1,31 @@
+
+name: Build
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        id: build
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential fakeroot dh-make git cmake dpkg-dev
+          dpkg-buildpackage -rfakeroot -b
+          file_name=$(ls ../ | grep "checksum_"| grep ".deb")
+          asset_path="../"$file_name
+          asset_name=$file_name
+          echo "::set-output name=asset_path::${asset_path}"
+          echo "::set-output name=asset_name::${asset_name}"
+      - name: Create Release
+        uses: softprops/action-gh-release@v0.1.8
+        with:
+          files: ${{ steps.build.outputs.asset_path }}
+          name: ${{ steps.build.outputs.asset_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

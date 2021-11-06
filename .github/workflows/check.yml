@@ -1,0 +1,34 @@
+name: Build check
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*'            # We don't want this to run on release
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        id: build
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential fakeroot dh-make git cmake dpkg-dev
+          dpkg-buildpackage -rfakeroot -b
+          file_name=$(ls ../ | grep "checksum_"| grep ".deb")
+          asset_path="../"$file_name
+          asset_name=$file_name
+          echo "::set-output name=artifact_path::${asset_path}"
+          echo "::set-output name=release_name::${asset_name}"
+
+      - name: Upload To GH Artifacts
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: ${{ steps.build.outputs.release_name }}
+          path: ${{ steps.build.outputs.artifact_path }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

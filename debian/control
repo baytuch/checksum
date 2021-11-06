@@ -7,7 +7,7 @@ Package: checksum
 Section: misc
 Priority: optional
 Depends: ${shlibs:Depends}
-Architecture: armhf
+Architecture: any
 Homepage: https://www.it-hobby.km.ua/
 Description: checksum util
  Checksum is a util for check your media archives
