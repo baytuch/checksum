@@ -23,6 +23,7 @@ bool fileCheckSum(const char *path, std::string &sum) {
   bool res = false;
   int c;
   int buff_n = 0;
+  int buff_n_a = 0;
   uint8_t buff[buff_size];
   MD5 md5;
   memset(buff, 0x00, (size_t) buff_size);
@@ -35,14 +36,16 @@ bool fileCheckSum(const char *path, std::string &sum) {
         buff[buff_n] = (uint8_t) c;
         buff_n++;
       }
+      buff_n_a = buff_n;
       if (buff_n >= buff_size || c == EOF) {
         md5.update(buff, buff_n);
         if (!res && buff_n > 0) res = true;
         memset(buff, 0x00, (size_t) buff_size);
         buff_n = 0;
       }
-      if (c == EOF) break;
+      if (c == EOF) break; 
     }
+    if (buff_n_a == 0) res = true;
     if (res) {
       md5.finalize();
       sum = md5.toString();
